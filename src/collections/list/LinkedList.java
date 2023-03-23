@@ -11,6 +11,21 @@ package collections.list;
  */
 public class LinkedList<T> implements List<T> {
 
+    @Override
+    public void reset() {
+
+    }
+
+    @Override
+    public T next() {
+        return null;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return false;
+    }
+
     /* private inner class for link "chains" */
     private static class Link<T> {
         T element;
@@ -34,17 +49,51 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
-    public void add(T element) {
-        // TODO
+    public void add(T element)
+    {
+        Link<T> link = new Link<>(element);
+
+        if (size == 0) {
+            head = link;
+        }
+        else {
+            last.next = link;
+        }
+
+        last = link;
+        size++;
+
     }
 
     @Override
-    public void add(int position, T element) {
+    public void add(int position, T element)
+    {
         if (position < 0 || position > size) {
             throw new ListBoundsException();
         }
 
-        // TODO
+        if(size == 0 || position == size) {
+            this.add(element);
+        }
+
+        else {
+            Link<T> current = head;
+
+            // Move current into position we want to insert to
+            for (int i = 0; i < position - 1; i++)
+            {
+                current = current.next;
+            }
+
+            Link<T> link = new Link<>();
+
+            //points to nothing
+            link.next = current.next;
+            current.next = link;
+
+            size++;
+        }
+
     }
 
     @Override
@@ -87,6 +136,21 @@ public class LinkedList<T> implements List<T> {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return List.super.isEmpty();
+    }
+
+    @Override
+    public boolean contains(T element) {
+        return List.super.contains(element);
+    }
+
+    @Override
+    public boolean remove(T element) {
+        return List.super.remove(element);
     }
 
     @Override
