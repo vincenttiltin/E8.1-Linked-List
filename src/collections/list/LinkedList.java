@@ -39,12 +39,12 @@ public class LinkedList<T> implements List<T> {
     }
 
     private Link<T> head;
-    private Link<T> last;  // a last reference is used to make list append operations `add(x)`, `add(size(), x)` more efficient
+    private Link<T> tail;  // a tail reference is used to make list append operations `add(x)`, `add(size(), x)` more efficient
     private int size;
 
     public LinkedList() {
         head = null;
-        last = null;
+        tail = null;
         size = 0;
     }
 
@@ -57,10 +57,10 @@ public class LinkedList<T> implements List<T> {
             head = link;
         }
         else {
-            last.next = link;
+            tail.next = link;
         }
 
-        last = link;
+        tail = link;
         size++;
 
     }
@@ -72,18 +72,24 @@ public class LinkedList<T> implements List<T> {
             throw new ListBoundsException();
         }
 
-        if(size == 0 || position == size) {
+        if (size == 0 || position == size)
+        {
             this.add(element);
         }
 
-        else {
-            Link<T> current = head;
+        else if (position == 0 )
+        {
+            Link link = new Link<>(element);
 
-            // Move current into position we want to insert to
-            for (int i = 0; i < position - 1; i++)
-            {
-                current = current.next;
-            }
+            link.next = head;
+            head = link;
+            size++;
+
+        }
+
+        else
+        {
+            Link<T> current = move(position - 1);
 
             Link<T> link = new Link<>();
 
@@ -97,40 +103,89 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
-    public T remove(int position) {
+    public T remove(int position)
+    {
         if (position < 0 || position >= size) {
             throw new ListBoundsException();
         }
 
-        // TODO
+        T removed;
 
-        return null;
+        // If we only hae one element
+        if(position == 0 && size ==1)
+        {
+            removed = head.element;
+            head = null;
+            tail = null;
+        }
+
+        // If were removing from the beginning
+        else if(position == 0)
+        {
+            removed = head.element;
+            head = head.next;
+        }
+        else
+        {
+            Link<T> current = move(position - 1);
+
+            removed = current.next.element;
+
+            if (position == size -1)
+            {
+                tail = current;
+                tail.next = null;
+            }
+            else
+            {
+                current.next = current.next.next;
+            }
+        }
+
+        return removed;
+    }
+
+    private Link<T> move(int position)
+    {
+        Link<T> current = head;
+
+        for (int i = 0; i < position;i++)
+        {
+            current = current.next;
+        }
+        return current;
+    }
+
+
+    @Override
+    public void clear()
+    {
+
     }
 
     @Override
-    public void clear() {
-        // TODO
+    public T get(int position)
+    {
+        if (position < 0 || position >= size)
+        {
+            throw new ListBoundsException();
+        }
+
+        Link<T> current = move(position);
+        return current.element;
     }
 
     @Override
-    public T get(int position) {
+    public T set(int position, T element)
+    {
         if (position < 0 || position >= size) {
             throw new ListBoundsException();
         }
 
-        // TODO
-
-        return null;
-    }
-
-    @Override
-    public T set(int position, T element) {
-        if (position < 0 || position >= size) {
-            throw new ListBoundsException();
-        }
-
-        // TODO
-        return null;
+        Link<T> current = move(position);
+        T oldElement = current.element;
+        current.element = element;
+        return oldElement;
     }
 
     @Override
